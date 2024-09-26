@@ -6,8 +6,10 @@ use App\Enums\StatusOvertime;
 use App\Enums\StatusOvertimeItem;
 use App\Filament\Resources\OvertimeResource\Pages;
 use App\Filament\Resources\OvertimeResource\RelationManagers;
+use App\Models\OvertimeItem;
 use App\Models\Overtime;
 use App\Models\OvertimeRequest;
+use Illuminate\Database\Eloquent\Model;
 use Awcodes\TableRepeater\Components\TableRepeater;
 use Awcodes\TableRepeater\Header;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
@@ -61,165 +63,186 @@ class OvertimeResource extends Resource implements HasShieldPermissions
         return $form
             ->schema([
                 Section::make(__('menu.overtimes.section_form'))
-                ->description(__('menu.overtimes.sub_section_form'))
-                ->schema([
-                    TextInput::make('title')
-                        ->label(__('menu.overtimes.field.title'))
-                        ->autocapitalize('words')
-                        ->required(),
-                    Group::make()
-                        ->schema([
-                            DatePicker::make('request_date')
-                                ->label(__('menu.overtimes.field.request_date'))
-                                ->disabled()
-                        ])->hidden(fn (string $operation): bool => $operation === 'create'),
-                    Group::make()
-                        ->schema([
-                            DatePicker::make('request_date')
-                                ->label(__('menu.overtimes.field.request_date'))
-                                ->readOnly()
-                                ->default(now())
-                        ])->hidden(fn (string $operation): bool => $operation === 'edit'),
-                    TableRepeater::make('overtime_items')
-                        ->label(__('menu.overtimes.field.overtime_items'))
-                        ->required()
-                        ->relationship()
-                        ->defaultItems(1)
-                        ->headers([
-                            Header::make(__('menu.overtimes.field.acitvity'))->width('150px')->align(Alignment::Center)->markAsRequired(),
-                            Header::make(__('menu.overtimes.field.overtime_date'))->width('150px')->align(Alignment::Center)->markAsRequired(),
-                            Header::make(__('menu.overtimes.field.from'))->width('150px')->align(Alignment::Center)
-                                ->markAsRequired(),
-                            Header::make(__('menu.overtimes.field.to'))->width('150px')->align(Alignment::Center)
-                                ->markAsRequired(),
-                            Header::make(__('menu.overtimes.field.total_hour'))->width('150px')->align(Alignment::Center)
-                                ->markAsRequired(),
-                            Header::make(__('menu.overtimes.field.note'))->width('150px')->align(Alignment::Center)
-                                ->markAsRequired(),
-                            Header::make(__('menu.overtimes.field.status'))->width('150px'),
-                        ])
-                        ->schema([
-                            TextInput::make('activity_name')
-                                ->autocapitalize('words')
-                                ->disabled(fn (callable $get): bool => $get('status') === "Approved")
-                                ->required(),
-                            DatePicker::make('overtime_date')
-                                ->disabled(fn (callable $get): bool => $get('status') === "Approved")
-                                ->required(),
-                            TimePicker::make('time_in')
-                                ->live()
-                                ->default('19.00.00')
-                                ->disabled(fn (callable $get): bool => $get('status') === "Approved")
-                                ->required(),
-                            TimePicker::make('time_out')
-                                ->default("00.00.00")
-                                ->live()
-                                ->disabled(fn (callable $get): bool => $get('status') === "Approved")
-                                ->required()
-                                // ->readOnly(fn (callable $get): bool => $get('status') === "Approved")
-                                // ->disabled(fn (callable $get): bool => $get('start_date') ? false : true)
-                                ->afterStateUpdated(
-                                    function ($state, callable $get, callable $set) {
-                                        $explodeTimeOut = explode(':', $state);
-                                        $timeIn = $get('time_in');
-                                        $explodeTimeIn = explode(':', $timeIn);
-                                        if ((int) $explodeTimeIn[0] !== 19) {
-                                            $total_hour = (int) $explodeTimeOut[0] - (int) $explodeTimeIn[0];
-                                            $set('total_hours', $total_hour);
-                                        } else {
-                                            if ((int) $explodeTimeOut[0] < 19) {
-                                                // Ini kalo lebih dari 23:00
-                                                $total24 = 24 - (int) $explodeTimeIn[0];
-                                                $total_hour = $total24 + (int) $explodeTimeOut[0];
+                    ->description(__('menu.overtimes.sub_section_form'))
+                    ->schema([
+                        TextInput::make('title')
+                            ->label(__('menu.overtimes.field.title'))
+                            ->autocapitalize('words')
+                            ->required(),
+                        Group::make()
+                            ->schema([
+                                DatePicker::make('request_date')
+                                    ->label(__('menu.overtimes.field.request_date'))
+                                    ->disabled()
+                            ])->hidden(fn(string $operation): bool => $operation === 'create'),
+                        Group::make()
+                            ->schema([
+                                DatePicker::make('request_date')
+                                    ->label(__('menu.overtimes.field.request_date'))
+                                    ->readOnly()
+                                    ->default(now())
+                            ])->hidden(fn(string $operation): bool => $operation === 'edit'),
+                        TableRepeater::make('overtime_items')
+                            ->label(__('menu.overtimes.field.overtime_items'))
+                            ->relationship()
+                            ->defaultItems(1)
+                            ->headers([
+                                Header::make(__('menu.overtimes.field.acitvity'))->width('150px')->align(Alignment::Center)->markAsRequired(),
+                                Header::make(__('menu.overtimes.field.overtime_date'))->width('150px')->align(Alignment::Center)->markAsRequired(),
+                                Header::make(__('menu.overtimes.field.from'))->width('150px')->align(Alignment::Center)
+                                    ->markAsRequired(),
+                                Header::make(__('menu.overtimes.field.to'))->width('150px')->align(Alignment::Center)
+                                    ->markAsRequired(),
+                                Header::make(__('menu.overtimes.field.total_hour'))->width('150px')->align(Alignment::Center)
+                                    ->markAsRequired(),
+                                Header::make(__('menu.overtimes.field.note'))->width('150px')->align(Alignment::Center)
+                                    ->markAsRequired(),
+                                Header::make(__('menu.overtimes.field.status'))->width('150px'),
+                            ])
+                            ->schema([
+                                TextInput::make('activity_name')
+                                    ->autocapitalize('words')
+                                    ->disabled(fn(callable $get): bool => $get('status') === "Approved")
+                                    ->required(),
+                                DatePicker::make('overtime_date')
+                                    ->disabled(fn(callable $get): bool => $get('status') === "Approved")
+                                    ->required(),
+                                TimePicker::make('time_in')
+                                    ->live()
+                                    ->default('19.00.00')
+                                    ->disabled(fn(callable $get): bool => $get('status') === "Approved")
+                                    ->required(),
+                                TimePicker::make('time_out')
+                                    ->default("00.00.00")
+                                    ->live()
+                                    ->disabled(fn(callable $get): bool => $get('status') === "Approved")
+                                    ->required()
+                                    // ->readOnly(fn (callable $get): bool => $get('status') === "Approved")
+                                    // ->disabled(fn (callable $get): bool => $get('start_date') ? false : true)
+                                    ->afterStateUpdated(
+                                        function ($state, callable $get, callable $set) {
+                                            $explodeTimeOut = explode(':', $state);
+                                            $timeIn = $get('time_in');
+                                            $explodeTimeIn = explode(':', $timeIn);
+                                            if ((int) $explodeTimeIn[0] !== 19) {
+                                                $total_hour = (int) $explodeTimeOut[0] - (int) $explodeTimeIn[0];
                                                 $set('total_hours', $total_hour);
                                             } else {
-                                                // ini klo lebih alias sampe 23
-                                                $total_hour = $explodeTimeOut[0] - (int) $explodeTimeIn[0];
-                                                $set('total_hours', $total_hour);
+                                                if ((int) $explodeTimeOut[0] < 19) {
+                                                    // Ini kalo lebih dari 23:00
+                                                    $total24 = 24 - (int) $explodeTimeIn[0];
+                                                    $total_hour = $total24 + (int) $explodeTimeOut[0];
+                                                    $set('total_hours', $total_hour);
+                                                } else {
+                                                    // ini klo lebih alias sampe 23
+                                                    $total_hour = $explodeTimeOut[0] - (int) $explodeTimeIn[0];
+                                                    $set('total_hours', $total_hour);
+                                                }
                                             }
                                         }
-                                    }
-                                ),
-                            TextInput::make('total_hours')
-                                ->suffix("Jam")
-                                ->disabled(fn (callable $get): bool => $get('status') === "Approved")
-                                ->required(),
-                            TextInput::make('reason')
-                                ->disabled(fn (callable $get): bool => $get('status') === "Approved")
-                                ->required(),
-                            Select::make('status')
-                                ->required()
-                                ->default('Pending')
-                                ->live()
-                                ->label('Status')
-                                ->options(StatusOvertimeItem::class)
-                                ->afterStateUpdated(
-                                    function ($state, callable $get, callable $set) {
-                                        if ($get('status') === "Approved") {
-                                            $set('checked_by', auth()->user()->id);
+                                    ),
+                                TextInput::make('total_hours')
+                                    ->suffix("Jam")
+                                    ->disabled(fn(callable $get): bool => $get('status') === "Approved")
+                                    ->required(),
+                                TextInput::make('reason')
+                                    ->disabled(fn(callable $get): bool => $get('status') === "Approved")
+                                    ->required(),
+                                Select::make('status')
+                                    ->required()
+                                    ->default('Pending')
+                                    ->live()
+                                    ->label('Status')
+                                    ->options(StatusOvertimeItem::class)
+                                    ->afterStateUpdated(
+                                        function ($state, callable $get, callable $set) {
+                                            if ($get('status') === "Approved") {
+                                                $set('checked_by', auth()->user()->id);
+                                            }
                                         }
+                                    ),
+                            ])
+                            ->columnSpan('full'),
+                        Select::make('overtime_status')
+                            ->label('Status')
+                            ->live()
+                            ->default('Process')
+                            ->options(StatusOvertime::class)
+                            ->afterStateUpdated(
+                                function ($state, callable $get, callable $set) {
+                                    if ($get('overtime_status') === "Done") {
+                                        $set('checked_by', auth()->user()->id);
                                     }
-                                ),
-                        ])
-                        ->columnSpan('full'),
-                    Select::make('overtime_status')
-                        ->label('Status')
-                        ->live()
-                        ->default('Process')
-                        ->options(StatusOvertime::class)
-                        ->afterStateUpdated(
-                            function ($state, callable $get, callable $set) {
-                                if ($get('overtime_status') === "Done") {
-                                    $set('checked_by', auth()->user()->id);
                                 }
-                            }
-                        ),
-                    Hidden::make('checked_by'),
-                    Group::make()
-                        ->schema([
-                            Hidden::make('user_id')
-                                ->default(auth()->user()->id),
-                        ])->hidden(fn (string $operation): bool => $operation === 'edit'),
+                            ),
+                        Hidden::make('checked_by'),
+                        Group::make()
+                            ->schema([
+                                Hidden::make('user_id')
+                                    ->default(auth()->user()->id),
+                            ])->hidden(fn(string $operation): bool => $operation === 'edit'),
 
-                ])->columns(2)->collapsible()
+                    ])->columns(2)->collapsible()
             ]);
     }
 
     public static function table(Table $table): Table
     {
+
         return $table
             ->columns([
                 TextColumn::make('id')
-                    ->label("ID")
+                    ->label(__('menu.overtimes.field.overtime_id'))
                     ->wrap()
                     ->searchable(),
                 TextColumn::make('title')
-                    ->label("Request")
+                    ->label(__('menu.overtimes.field.title'))
                     ->searchable(),
                 TextColumn::make('request_date')
-                    ->label('Tanggal')
-                    ->searchable(),
+                    ->label(__('menu.overtimes.field.request_date')),
+                TextColumn::make('user.name')
+                    ->label(__('menu.overtimes.field.request_by')),
+                TextColumn::make('Total Jam')
+                    ->getStateUsing(function (Model $record): string {
+                        $data = $record->overtime_items->where('status', 'Approved')->sum('total_hours');
+                        if ($data != 0) {
+                            return $data . ' Jam';
+                        } else {
+                            return '-';
+                        }
+                    })
+                    ->label('Total jam'),
+                TextColumn::make('user_checked_by.name')
+                    ->label(__('menu.overtimes.field.checked_by'))
+                    ->default('Menunggu persetujuan'),
                 TextColumn::make('overtime_status')
-                    ->label('Status')
+                    ->label(__('menu.overtimes.field.status'))
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
+                    ->color(fn(string $state): string => match ($state) {
                         'Process' => 'warning',
-                        'Done' => 'success',
+                        'Done' => 'info',
                         default => 'gray',
                     })
                     ->searchable(),
-                TextColumn::make('user.name')
-                    ->label('Karyawan')
-                    ->searchable(),
-                TextColumn::make('user_checked_by.name')
-                    ->label('Disetujui Oleh')
-                    ->default('Menunggu persetujuan')
-                    ->searchable(),
+                TextColumn::make('created_at')
+                    ->date()
+                    ->label(__('menu.overtimes.field.created_at'))
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('updated_at')
+                    ->date()
+                    ->label(__('menu.overtimes.field.updated_at'))
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+
             ])
             ->filters([
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make()
+                    ->label(__('default.view_detail'))
+                    ->url(fn(OvertimeRequest $record): string => route('reports.overtime.view', $record))
+                    ->openUrlInNewTab(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
