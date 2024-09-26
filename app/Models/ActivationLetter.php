@@ -21,7 +21,12 @@ class ActivationLetter extends Model
         'company_id',
         'user_id',
         'brand_id',
+        'is_prorate',
         'zoom_sub_account_id',
+    ];
+
+    protected $casts = [
+        'is_prorate' => 'boolean',
     ];
 
     //  * Get the value indicating whether the IDs are incrementing.

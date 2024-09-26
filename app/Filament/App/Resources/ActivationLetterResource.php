@@ -11,6 +11,7 @@ use App\Models\ZoomProductType;
 use App\Models\ZoomSubAccount;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -20,6 +21,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Columns\CheckboxColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
@@ -52,7 +54,7 @@ class ActivationLetterResource extends Resource implements HasShieldPermissions
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::where('user_id', auth()->user()->id)->count();
+        return static::getModel()::where('user_id', auth()->user()->id)->where('is_prorate', false)->count();
     }
 
     public static function getNavigationBadgeColor(): ?string
@@ -110,6 +112,7 @@ class ActivationLetterResource extends Resource implements HasShieldPermissions
                     TextInput::make('code_reference')
                     ->label('Kode Referensi (Opsional)')
                     ->nullable(),
+                    Checkbox::make('is_prorate')
                 ])->collapsible()
             ]);
     }
@@ -225,6 +228,6 @@ class ActivationLetterResource extends Resource implements HasShieldPermissions
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('user_id', auth()->id())->orderBy('created_at', 'DESC');
+        return parent::getEloquentQuery()->where('is_prorate', false)->where('user_id', auth()->id())->orderBy('created_at', 'DESC');
     }
 }

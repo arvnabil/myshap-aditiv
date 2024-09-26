@@ -58,7 +58,7 @@ class EmployeeResource extends Resource implements HasShieldPermissions
         {
             $employee = Employee::orderBy('created_at','desc')->first();
             if($employee->account_number == null){
-                return 'ADT-000';
+                return 'ACT-000';
             }
             if($employee->account_number != null) {
                 $str = explode('-', $employee->account_number);

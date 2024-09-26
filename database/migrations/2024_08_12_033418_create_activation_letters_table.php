@@ -25,6 +25,7 @@ return new class extends Migration
             $table->foreign('user_id')->on('users')->references('id')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('brand_id')->nullable();
             $table->foreign('brand_id')->on('brands')->references('id')->onDelete('cascade')->onUpdate('cascade');
+            $table->boolean('is_prorate')->default(false);
             $table->unsignedBigInteger('company_id')->nullable();
             $table->foreign('company_id')->on('companies')->references('id')->onDelete('cascade')->onUpdate('cascade');
             $table->foreignUuid('zoom_sub_account_id')->references('id')->on('zoom_sub_accounts')->onDelete('cascade')->onUpdate('cascade');

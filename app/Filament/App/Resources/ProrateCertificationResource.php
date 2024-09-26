@@ -1,14 +1,17 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\App\Resources;
 
-use App\Filament\Resources\ActivationLetterResource\Pages;
+use App\Filament\App\Resources\ProrateCertificationResource\Pages;
+use App\Filament\App\Resources\ProrateCertificationResource\RelationManagers;
 use App\Models\ActivationLetter;
 use App\Models\Brand;
 use App\Models\Company;
 use App\Models\User;
 use App\Models\ZoomProductType;
 use App\Models\ZoomSubAccount;
+use Filament\Forms;
+use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
@@ -20,21 +23,21 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ActivationLetterResource extends Resource
+class ProrateCertificationResource extends Resource
 {
     protected static ?string $model = ActivationLetter::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-document';
     protected static ?string $activeNavigationIcon = 'heroicon-m-document';
     protected static ?string $navigationGroup = 'Zoom Account Customer';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 4;
 
     public static function getPermissionPrefixes(): array
     {
@@ -49,7 +52,17 @@ class ActivationLetterResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return __('menu.activation_letters.manage_activation_letter');
+        return __('Prorate Letter');
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::where('is_prorate',true)->where('user_id', auth()->user()->id)->count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return static::getModel()::where('is_prorate', true)->where('user_id', auth()->user()->id)->count() > 0 ? 'primary' : 'warning';
     }
 
     public static function form(Form $form): Form
@@ -65,13 +78,13 @@ class ActivationLetterResource extends Resource
                     ->searchable()
                         ->required(),
                     TextInput::make('name')
-                        ->label(__('menu.activation_letters.field.name'))
-                        ->autocapitalize('words')
-                        ->required(),
+                    ->label(__('menu.activation_letters.field.name'))
+                    ->autocapitalize('words')
+                    ->required(),
                     TextInput::make('email')
-                        ->label(__('menu.activation_letters.field.email'))
-                        ->email()
-                        ->required(),
+                    ->label(__('menu.activation_letters.field.email'))
+                    ->email()
+                    ->required(),
                     DatePicker::make('start_date'),
                     DatePicker::make('end_date'),
                     TextInput::make('total_license')
@@ -86,8 +99,8 @@ class ActivationLetterResource extends Resource
                         ->createOptionForm([
                             Card::make([
                                 TextInput::make('name')
-                                    ->label(__('menu.companies.field.name'))
-                                    ->required(),
+                                ->label(__('menu.companies.field.name'))
+                                ->required(),
                                 Hidden::make('user_id')
                                 ->default(auth()->user()->id),
                             ])->columns(2)
@@ -99,22 +112,16 @@ class ActivationLetterResource extends Resource
                         ->searchable()
                         ->required()
                         ->relationship(name: 'brand', titleAttribute: 'name'),
-                    Select::make('user_id')
-                    ->label(__('User'))
-                    ->default(1)
-                        ->options(User::all()->pluck('name', 'id'))
-                        ->searchable()
-                        ->required()
-                        ->relationship(name: 'user', titleAttribute: 'name'),
                     Textarea::make('address')
                     ->label(__('menu.activation_letters.field.address')),
                     TextInput::make('code_reference')
                     ->label('Kode Referensi (Opsional)')
                     ->nullable(),
-                    Checkbox::make('is_prorate')
+                    Checkbox::make('is_prorate')->default(true)
                 ])->collapsible()
             ]);
     }
+
 
     public static function table(Table $table): Table
     {
@@ -134,14 +141,14 @@ class ActivationLetterResource extends Resource
                     ->label(__('menu.activation_letters.field.company'))
                     ->searchable(),
                 TextColumn::make('code')
-                    ->label(__('menu.activation_letters.field.code'))
-                    ->searchable(),
+                ->label(__('menu.activation_letters.field.code'))
+                ->searchable(),
                 TextColumn::make('name')
-                    ->label(__('menu.activation_letters.field.name'))
-                    ->searchable(),
+                ->label(__('menu.activation_letters.field.name'))
+                ->searchable(),
                 TextColumn::make('email')
-                    ->label(__('menu.activation_letters.field.email'))
-                    ->limit(30)
+                ->label(__('menu.activation_letters.field.email'))
+                ->limit(30)
                     ->searchable(),
                 TextColumn::make('start_date')
                 ->date()
@@ -178,11 +185,13 @@ class ActivationLetterResource extends Resource
 
             ])
             ->filters([
+                SelectFilter::make('zoom_code')
+                ->options(ZoomProductType::all()->pluck('name', 'code')),
                 SelectFilter::make('user_id')
-                    ->label(__('menu.activation_letters.field.pic'))
-                    ->options(User::with('employee')->get()->pluck('employee.fullname', 'id')),
+                ->label(__('menu.activation_letters.field.pic'))
+                ->options(User::with('employee')->get()->pluck('employee.fullname', 'id')),
                 Filter::make('code_reference')
-                    ->default(false)
+                ->default(false)
             ])
             ->actions([
                 Action::make('reportLeaveRequest')
@@ -216,9 +225,14 @@ class ActivationLetterResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListActivationLetters::route('/'),
-            'create' => Pages\CreateActivationLetter::route('/create'),
-            'edit' => Pages\EditActivationLetter::route('/{record}/edit'),
+            'index' => Pages\ListProrateCertifications::route('/'),
+            'create' => Pages\CreateProrateCertification::route('/create'),
+            'edit' => Pages\EditProrateCertification::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('is_prorate', true)->where('user_id', auth()->id())->orderBy('created_at', 'DESC');
     }
 }
