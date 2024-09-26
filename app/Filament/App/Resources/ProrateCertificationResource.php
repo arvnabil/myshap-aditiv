@@ -15,6 +15,7 @@ use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -81,10 +82,20 @@ class ProrateCertificationResource extends Resource
                     ->label(__('menu.activation_letters.field.name'))
                     ->autocapitalize('words')
                     ->required(),
-                    TextInput::make('email')
-                    ->label(__('menu.activation_letters.field.email'))
-                    ->email()
-                    ->required(),
+                    Group::make()
+                        ->schema([
+                            TextInput::make('email')
+                                ->label(__('menu.activation_letters.field.email'))
+                                ->email()
+                                ->readOnly(),
+                        ])->hidden(fn(string $operation): bool => $operation === 'create'),
+                    Group::make()
+                        ->schema([
+                            TextInput::make('email')
+                                ->label(__('menu.activation_letters.field.email'))
+                                ->email()
+                                ->required(),
+                        ])->hidden(fn(string $operation): bool => $operation === 'edit'),
                     DatePicker::make('start_date'),
                     DatePicker::make('end_date'),
                     TextInput::make('total_license')

@@ -12,6 +12,7 @@ use App\Models\ZoomSubAccount;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -21,6 +22,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Columns\CheckboxColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
@@ -68,10 +70,21 @@ class ActivationLetterResource extends Resource
                         ->label(__('menu.activation_letters.field.name'))
                         ->autocapitalize('words')
                         ->required(),
-                    TextInput::make('email')
-                        ->label(__('menu.activation_letters.field.email'))
-                        ->email()
-                        ->required(),
+                    Group::make()
+                        ->schema([
+                            TextInput::make('email')
+                            ->label(__('menu.activation_letters.field.email'))
+                            ->email()
+                            ->readOnly(),
+                    ])->hidden(fn(string $operation): bool => $operation === 'create'),
+                    Group::make()
+                        ->schema([
+                            TextInput::make('email')
+                            ->label(__('menu.activation_letters.field.email'))
+                            ->email()
+                            ->required(),
+                    ])->hidden(fn(string $operation): bool => $operation === 'edit'),
+
                     DatePicker::make('start_date'),
                     DatePicker::make('end_date'),
                     TextInput::make('total_license')
@@ -103,7 +116,6 @@ class ActivationLetterResource extends Resource
                     ->label(__('User'))
                     ->default(1)
                         ->options(User::all()->pluck('name', 'id'))
-                        ->searchable()
                         ->required()
                         ->relationship(name: 'user', titleAttribute: 'name'),
                     Textarea::make('address')
@@ -133,6 +145,7 @@ class ActivationLetterResource extends Resource
                 ->wrap()
                     ->label(__('menu.activation_letters.field.company'))
                     ->searchable(),
+                CheckboxColumn::make('is_prorate')->disabled(),
                 TextColumn::make('code')
                     ->label(__('menu.activation_letters.field.code'))
                     ->searchable(),
@@ -169,6 +182,7 @@ class ActivationLetterResource extends Resource
                 TextColumn::make('zoom_sub_account.account_number')
                 ->label(__('Account Number'))
                 ->searchable(),
+
                 TextColumn::make('code_reference')
                 ->limit(30)
                     ->default('-')
