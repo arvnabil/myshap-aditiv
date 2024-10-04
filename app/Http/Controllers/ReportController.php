@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ActivationLetter;
 use App\Models\LeaveRequest;
 use App\Models\OvertimeRequest;
+use App\Models\PurchaseOrder;
 use App\Models\ReimbursementRequest;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -84,5 +85,15 @@ class ReportController extends Controller
             return $pdf->download('Activation Letter.pdf');
         }
         abort(403, 'You are not allowed to access this page');
+    }
+
+    public function purchase_order_view(PurchaseOrder $record)
+    {
+        // $recordWithItem = PurchaseOrder::with('purchase_order_items', 'user', 'user_checked_by')->find($record->id);
+        $recordWithItem = PurchaseOrder::with('purchase_order_items')->find($record->id);
+        // if ($record->user->id === auth()->user()->id || auth()->user()->hasRole('super_admin')) {
+            return view('mail.purchase_order.index', ['purchaseOrder' => $recordWithItem]);
+        // }
+        // abort(403, 'You are not allowed to access this page');
     }
 }

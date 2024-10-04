@@ -19,6 +19,11 @@ Route::prefix('employee/reports')->group(function () {
         ->middleware(VerifyAuth::class)
         ->name('reports.leave.download');
 
+    // Purchase Order
+    Route::get('/purchase_order/view/{record}', [ReportController::class, 'purchase_order_view'])
+        ->middleware(VerifyAuth::class)
+        ->name('letter.purchase_order.view');
+
     // OVERTIME REQUEST REPORT
     Route::get('/overtime_request/view/{record}', [ReportController::class, 'overtime_request_view'])
         ->middleware(VerifyAuth::class)
