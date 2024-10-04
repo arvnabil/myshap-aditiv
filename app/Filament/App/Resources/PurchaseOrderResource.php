@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\App\Resources;
 
-use App\Filament\Resources\PurchaseOrderResource\Pages;
-use App\Filament\Resources\PurchaseOrderResource\RelationManagers;
+use App\Filament\App\Resources\PurchaseOrderResource\Pages;
+use App\Filament\App\Resources\PurchaseOrderResource\RelationManagers;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderItem;
 use App\Models\Supplier;
@@ -31,8 +31,8 @@ class PurchaseOrderResource extends Resource
     protected static ?string $model = PurchaseOrder::class;
 
     protected static ?string $navigationIcon = 'heroicon-m-building-storefront';
-    protected static ?string $navigationGroup = 'Features';
-    protected static ?int $navigationSort = 7;
+    protected static ?string $navigationGroup = 'Purchase Order';
+    protected static ?int $navigationSort = 2;
 
     public static function getPermissionPrefixes(): array
     {
@@ -44,6 +44,7 @@ class PurchaseOrderResource extends Resource
             'delete',
         ];
     }
+
     public static function form(Form $form): Form
     {
 
@@ -109,28 +110,28 @@ class PurchaseOrderResource extends Resource
                 ->description('Information about Purchase Order')
                 ->schema([
                     Hidden::make('purchase_order_type_id')
-                        ->default(1),
+                    ->default(1),
                     Select::make('supplier_id')
-                        ->label('Supplier')
-                        ->options(Supplier::all()->pluck('name', 'id'))
-                        ->searchable()
+                    ->label('Supplier')
+                    ->options(Supplier::all()->pluck('name', 'id'))
+                    ->searchable()
                         ->required(),
                     TextInput::make('purchase_order_number')
-                        ->label("Nomer PO")
-                        ->default(IdPO())
+                    ->label("Nomer PO")
+                    ->default(IdPO())
                         ->readOnly()
                         ->required(),
                     DatePicker::make('purchase_order_date')
-                        ->label('Tanggal PO')
-                        ->readOnly()
+                    ->label('Tanggal PO')
+                    ->readOnly()
                         ->default(now()),
                     DatePicker::make('due_date')
-                        ->label('Jatuh Tempo')
-                        ->default(now()),
+                    ->label('Jatuh Tempo')
+                    ->default(now()),
 
                     TableRepeater::make('purchase_order_items')
-                        ->label("Item")
-                        ->relationship()
+                    ->label("Item")
+                    ->relationship()
                         ->defaultItems(1)
                         ->live()
                         ->afterStateUpdated(function (Set $set, Get $get) {
@@ -143,10 +144,9 @@ class PurchaseOrderResource extends Resource
                             $ppn = (($getSubtotal * 11) / 100);
                             $set('ppn', $ppn);
                             $set('discount', $ppn);
-                            $total = $sum+$ppn;
+                            $total = $sum + $ppn;
                             $set('total', $total);
                             $set('spelled_out', terbilang($total) . ' rupiah');
-
                         })
                         // ->renderHeader(false)
                         ->headers([
@@ -161,11 +161,11 @@ class PurchaseOrderResource extends Resource
                         ])
                         ->schema([
                             TextInput::make('product_name')
-                                ->placeholder('Keterangan')
-                                ->autocapitalize('words')
-                                ->required(),
+                            ->placeholder('Keterangan')
+                            ->autocapitalize('words')
+                            ->required(),
                             TextInput::make('qty')
-                                ->live()
+                            ->live()
                                 ->placeholder('Quantity')
                                 ->autocapitalize('words')
                                 ->required()
@@ -182,31 +182,31 @@ class PurchaseOrderResource extends Resource
                                     }
                                 ),
                             TextInput::make('unit_price')
-                                ->prefix("Rp")
+                            ->prefix("Rp")
                                 ->default(0)
                                 ->required()
                                 ->live()
                                 ->afterStateUpdated(
-                            function ($state, callable $get, callable $set) {
+                                    function ($state, callable $get, callable $set) {
                                         $quantity = $get('qty');
-                                        $jumlah = (int) $state*(int)$quantity;
+                                        $jumlah = (int) $state * (int)$quantity;
                                         $set('amount', $jumlah);
                                         $set('satuan', null);
                                         $set('price_amount', $jumlah);
                                     }
                                 ),
                             Select::make('satuan')
-                                ->label('Satuan')
-                                ->options([
-                                    'License' => 'License',
-                                    'Paket' => 'Paket',
-                                    'Unit' => 'Unit',
-                                    'Pcs' => 'Pcs',
-                                ])
+                            ->label('Satuan')
+                            ->options([
+                                'License' => 'License',
+                                'Paket' => 'Paket',
+                                'Unit' => 'Unit',
+                                'Pcs' => 'Pcs',
+                            ])
                                 ->searchable()
                                 ->required(),
                             TextInput::make('discount')
-                                ->prefix("%")
+                            ->prefix("%")
                                 ->live()
                                 ->placeholder('0')
                                 ->default(0)
@@ -229,7 +229,7 @@ class PurchaseOrderResource extends Resource
                                 ),
 
                             TextInput::make('vat')
-                                ->prefix("%")
+                            ->prefix("%")
                                 ->live()
                                 ->placeholder('0')
                                 ->default('X')
@@ -252,7 +252,7 @@ class PurchaseOrderResource extends Resource
                                 ),
 
                             TextInput::make('amount')
-                                ->prefix("Rp")
+                            ->prefix("Rp")
                                 ->placeholder('0')
                                 ->live()
                                 ->default(0)
@@ -260,48 +260,48 @@ class PurchaseOrderResource extends Resource
                                 ->required(),
                             // yang hitungan
                             Hidden::make('discount_price')
-                                ->default(0),
+                            ->default(0),
                             Hidden::make('vat_price')
-                                ->default(0),
+                            ->default(0),
                             Hidden::make('price_amount')
-                                ->default(0)
+                            ->default(0)
                         ])
                         ->columnSpan('full'),
 
                     TextInput::make('subtotal')
-                        ->prefix('Rp')
+                    ->prefix('Rp')
                         ->label('Subtotal')
                         ->placeholder('Otomatis Subtotal')
                         ->readOnly()
                         ->live()
                         ->required(),
                     TextInput::make('ppn')
-                        ->label('PPN 11%')
-                        ->prefix('Rp')
+                    ->label('PPN 11%')
+                    ->prefix('Rp')
                         ->placeholder('Otomatis PPN 11%')
                         ->readOnly()
                         ->required(),
                     TextInput::make('total')
-                        ->prefix('Rp')
+                    ->prefix('Rp')
                         ->label('Total')
                         ->placeholder('Otomatis Subtotal + PPN')
                         ->readOnly()
                         ->required(),
                     TextInput::make('insufficient_payment')
-                        ->prefix('Rp')
+                    ->prefix('Rp')
                         ->label('Sisa Tagihan')
                         ->placeholder('Input Manual')
                         ->default(0)
                         ->required(),
                     TextInput::make('message')
-                        ->label('Pesan')
-                        ->placeholder('Pesan Optional')
-                        ->required(),
+                    ->label('Pesan')
+                    ->placeholder('Pesan Optional')
+                    ->required(),
                     TextInput::make('spelled_out')
-                        ->label('Terbilang')
-                        ->autocapitalize('words')
-                        ->placeholder('Terbilang dari Total')
-                        ->required(),
+                    ->label('Terbilang')
+                    ->autocapitalize('words')
+                    ->placeholder('Terbilang dari Total')
+                    ->required(),
 
 
                 ])->columns(2)->collapsible(),
@@ -312,20 +312,20 @@ class PurchaseOrderResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('purchase_order_number')
-                    ->label(__('Nomor PO'))
-                    ->searchable(),
+                ->label(__('Nomor PO'))
+                ->searchable(),
                 TextColumn::make('purchase_order_date')
-                    ->label(__('Tanggal'))
-                    ->date('d F Y')
-                    ->searchable(),
+                ->label(__('Tanggal'))
+                ->date('d F Y')
+                ->searchable(),
                 TextColumn::make('due_date')
-                    ->date('d F Y')
-                    ->label(__('Jatuh Tempo')),
+                ->date('d F Y')
+                ->label(__('Jatuh Tempo')),
                 TextColumn::make('supplier.name')
-                    ->label(__('Supplier')),
+                ->label(__('Supplier')),
                 TextColumn::make('total')
-                    ->money('idr')
-                    ->label(__('Total Nilai')),
+                ->money('idr')
+                ->label(__('Total Nilai')),
             ])
             ->filters([
                 //
