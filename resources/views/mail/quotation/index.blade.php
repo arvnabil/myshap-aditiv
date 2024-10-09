@@ -57,7 +57,7 @@
                     <br />
                     {{ $quotation->user->employee->full_name }} - {{ $quotation->user->employee->position->name }}
                     <br />
-                    Phone : {{ $quotation->user->phone ?? '08XXXXXXXXXXX' }}
+                    Phone : {{ $quotation->user->employee->phone_number ?? '08XXXXXXXXXXX' }}
                     <br />
                     Email : {{ $quotation->user->email }}
                 </p>
