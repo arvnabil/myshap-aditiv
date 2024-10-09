@@ -24,7 +24,7 @@ class PositionResource extends Resource implements HasShieldPermissions
     protected static ?string $model = Position::class;
 
     protected static ?string $navigationIcon = 'heroicon-m-user';
-    protected static ?string $navigationGroup = 'Employee Management';
+    protected static ?string $navigationGroup = 'Employee Features';
     protected static ?int $navigationSort = 5;
 
     public static function getPermissionPrefixes(): array

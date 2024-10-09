@@ -26,7 +26,7 @@ class CompanyResource extends Resource implements HasShieldPermissions
     protected static ?string $model = Company::class;
 
     protected static ?string $navigationIcon = 'heroicon-m-building-office-2';
-    protected static ?string $navigationGroup = 'Features';
+    protected static ?string $navigationGroup = 'Quotation Features';
     protected static ?int $navigationSort = 5;
     protected static ?string $navigationLabel = 'Company';
 

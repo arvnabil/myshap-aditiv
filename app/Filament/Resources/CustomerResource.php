@@ -3,12 +3,10 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CustomerResource\Pages;
-use App\Filament\Resources\CustomerResource\RelationManagers;
 use App\Models\Company;
 use App\Models\Customer;
 use App\Models\User;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
-use Filament\Forms;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
@@ -28,7 +26,7 @@ class CustomerResource extends Resource implements HasShieldPermissions
     protected static ?string $model = Customer::class;
 
     protected static ?string $navigationIcon = 'heroicon-m-user';
-    protected static ?string $navigationGroup = 'Zoom Account Customer';
+    protected static ?string $navigationGroup = 'Quotation Features';
     protected static ?int $navigationSort = 4;
 
     public static function getPermissionPrefixes(): array

@@ -33,7 +33,7 @@ class ReimbursementResource extends Resource implements HasShieldPermissions
     protected static ?string $model = ReimbursementRequest::class;
 
     protected static ?string $navigationIcon = 'heroicon-m-banknotes';
-    protected static ?string $navigationGroup = 'Features';
+    protected static ?string $navigationGroup = 'Employee Features';
     protected static ?int $navigationSort = 4;
 
     public static function getPermissionPrefixes(): array

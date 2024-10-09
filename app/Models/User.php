@@ -34,7 +34,9 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser, Has
         'password',
         'leave_type',
         'avatar',
-        'is_active'
+        'is_active',
+        'signature',
+        'quotation_number'
     ];
 
     /**
@@ -57,7 +59,7 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser, Has
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'leave_type' => 'array'
+            'leave_type' => 'array',
         ];
     }
 
@@ -102,6 +104,17 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser, Has
                     Storage::disk('public')->delete($model->getOriginal('avatar'));
                 }
             });
+            self::deleted(function (self $model) {
+                if ($model->signature !== null) {
+                    Storage::disk('public')->delete($model->signature);
+                }
+            });
+
+            static::updating(function ($model) {
+                if ($model->isDirty('signature') && ($model->getOriginal('signature') !== null)) {
+                    Storage::disk('public')->delete($model->getOriginal('signature'));
+                }
+            });
 
         }
     }
@@ -128,9 +141,9 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser, Has
         return $this->hasMany(Company::class, 'user_id');
     }
 
-    public function activation_letter()
+    public function purchase_order()
     {
-        return $this->hasMany(ActivationLetter::class, 'user_id');
+        return $this->hasMany(PurchaseOrder::class, 'user_id');
     }
 
     public function user_leave_checked_by()

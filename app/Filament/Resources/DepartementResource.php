@@ -21,7 +21,7 @@ class DepartementResource extends Resource implements HasShieldPermissions
     protected static ?string $model = Departement::class;
 
     protected static ?string $navigationIcon = 'heroicon-m-building-office-2';
-    protected static ?string $navigationGroup = 'Employee Management';
+    protected static ?string $navigationGroup = 'Employee Features';
     protected static ?int $navigationSort = 6;
 
     public static function getPermissionPrefixes(): array

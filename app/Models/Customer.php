@@ -55,9 +55,4 @@ class Customer extends Model
     {
         return $this->belongsTo(Company::class, 'company_id');
     }
-
-    public function zoom_item_sub_account()
-    {
-        return $this->hasMany(ZoomItemSubAccount::class, 'customer_id');
-    }
 }

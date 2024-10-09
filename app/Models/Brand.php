@@ -18,11 +18,6 @@ class Brand extends Model
         'pic_email'
     ];
 
-    public function activation_letters()
-    {
-        return $this->hasMany(ActivationLetter::class, 'brand_id');
-    }
-
     public static function booted(): void
     {
         self::deleted(function (self $model) {

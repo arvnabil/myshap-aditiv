@@ -24,7 +24,9 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class PurchaseOrderResource extends Resource
 {
@@ -302,7 +304,7 @@ class PurchaseOrderResource extends Resource
                     ->autocapitalize('words')
                     ->placeholder('Terbilang dari Total')
                     ->required(),
-
+                    Hidden::make('user_id')->default(Auth::user()->id)
 
                 ])->columns(2)->collapsible(),
             ]);
@@ -341,7 +343,9 @@ class PurchaseOrderResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])->recordUrl(
+                fn(Model $record) => null,
+            );
     }
 
     public static function getRelations(): array

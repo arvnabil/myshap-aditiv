@@ -3,14 +3,11 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PurchaseOrderResource\Pages;
-use App\Filament\Resources\PurchaseOrderResource\RelationManagers;
 use App\Models\PurchaseOrder;
-use App\Models\PurchaseOrderItem;
 use App\Models\Supplier;
 use Awcodes\TableRepeater\Components\TableRepeater;
 use Awcodes\TableRepeater\Header;
 use Carbon\Carbon;
-use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
@@ -23,15 +20,14 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class PurchaseOrderResource extends Resource
 {
     protected static ?string $model = PurchaseOrder::class;
 
     protected static ?string $navigationIcon = 'heroicon-m-building-storefront';
-    protected static ?string $navigationGroup = 'Features';
+    protected static ?string $navigationGroup = 'PO Features';
     protected static ?int $navigationSort = 7;
 
     public static function getPermissionPrefixes(): array
@@ -302,7 +298,7 @@ class PurchaseOrderResource extends Resource
                         ->autocapitalize('words')
                         ->placeholder('Terbilang dari Total')
                         ->required(),
-
+                    Hidden::make('user_id')->default(Auth::user()->id)
 
                 ])->columns(2)->collapsible(),
             ]);

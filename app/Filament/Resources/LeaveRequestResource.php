@@ -6,7 +6,6 @@ use App\Enums\StatusLeave;
 use App\Filament\Resources\LeaveRequestResource\Pages;
 use App\Models\LeaveRequest;
 use App\Models\LeaveType;
-use App\Models\User;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use DateTime;
 use DateTimeZone;
@@ -33,7 +32,7 @@ class LeaveRequestResource extends Resource implements HasShieldPermissions
     protected static ?string $model = LeaveRequest::class;
 
     protected static ?string $navigationIcon = 'heroicon-m-rocket-launch';
-    protected static ?string $navigationGroup = 'Features';
+    protected static ?string $navigationGroup = 'Employee Features';
     protected static ?int $navigationSort = 2;
 
     public static function getPermissionPrefixes(): array

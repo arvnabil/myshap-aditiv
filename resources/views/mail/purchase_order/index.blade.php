@@ -72,32 +72,25 @@
                 <div class="tm_invoice_in">
                     <div class="tm_invoice_head tm_align_center">
                         <div class="tm_invoice_left" style="margin-right: -120px;">
-                            <div class="tm_primary_color tm_f20 tm_text_uppercase tm_bold">{{ $purchaseOrder->purchase_order_type->company_name }}</div>
+                            <div class="tm_primary_color tm_f20 tm_text_uppercase tm_bold">PT ABAD DIGITAL KREATIV</div>
                         </div>
                         <div class="tm_invoice_right tm_text_right">
-                            <img src="{{ asset('storage/' . $purchaseOrder->purchase_order_type->logo) }}" width="200" alt="Logo">
+                            <img src="{{ asset('report_template/assets/img/aditiv-light.webp') }}" width="200" alt="Logo">
                         </div>
                     </div>
-                    <!-- <div class="tm_invoice_info tm_mb20">
-                        <div class="tm_invoice_seperator tm_gray_bg"></div>
-                        <div class="tm_invoice_info_list">
-                            <p class="tm_invoice_number tm_m0">Invoice No: <b class="tm_primary_color">#LL93784</b></p>
-                            <p class="tm_invoice_date tm_m0">Date: <b class="tm_primary_color">01.07.2022</b></p>
-                        </div>
-                    </div> -->
                     <div class="tm_invoice_head tm_mb10">
                         <div class="tm_invoice_left" style="margin-right: -140px;">
                             <p class="tm_mb2 f12">
-                                {{$purchaseOrder->purchase_order_type->company_address}}
+                                Arcade Business Center 6th Floor Unit 6-03,Jl. Pantai Indah Utara 2, Kav.C1, Desa/Kelurahan Kapuk Muara, Kec. Penjaringan, Kota Adm. Jakarta Utara, Provinsi DKI Jakarta
                             </p>
                             <p class="tm_mb2 f12">
-                                Telp: (021) {{$purchaseOrder->purchase_order_type->company_phone}}
+                                Telp: (021) 50105009
                             </p>
                             <p class="tm_mb2 f12">
-                                Email: {{$purchaseOrder->purchase_order_type->company_email}}
+                                Email: info@aditiv.co.id
                             </p>
                             <p class="tm_mb2 f12">
-                                {{$purchaseOrder->purchase_order_type->npwp_number}}
+                                20.515.935.3-047.000
                             </p>
                         </div>
                         <div class="tm_invoice_right tm_text_right">

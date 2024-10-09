@@ -31,11 +31,6 @@ class Company extends Model
         return $this->hasMany(ReimbursementItem::class, 'company_id');
     }
 
-    public function activation_letters()
-    {
-        return $this->hasMany(ActivationLetter::class, 'company_id');
-    }
-
     public static function booted(): void
     {
         self::deleted(function (self $model) {
@@ -56,4 +51,3 @@ class Company extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 }
-

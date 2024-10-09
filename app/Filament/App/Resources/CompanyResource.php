@@ -27,7 +27,7 @@ class CompanyResource extends Resource implements HasShieldPermissions
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
     protected static ?string $activeNavigationIcon = 'heroicon-m-building-office-2';
-    protected static ?string $navigationGroup = 'Zoom Account Customer';
+    protected static ?string $navigationGroup = 'Quotation Features';
     protected static ?int $navigationSort = 5;
 
     // public static function getNavigationBadgeTooltip(): ?string
@@ -97,7 +97,9 @@ class CompanyResource extends Resource implements HasShieldPermissions
                     Hidden::make('user_id')
                         ->default(auth()->user()->id),
                 ])->columns(2)
-            ]);
+            ])->recordUrl(
+                fn(Model $record) => null,
+            );
     }
 
     public static function table(Table $table): Table

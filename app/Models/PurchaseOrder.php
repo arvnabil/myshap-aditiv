@@ -18,17 +18,16 @@ class PurchaseOrder extends Model
         'subtotal',
         'total',
         'insufficient_payment',
-        'purchase_order_type_id',
         'supplier_id',
+        'user_id'
     ];
-
-    public function purchase_order_type()
-    {
-        return $this->belongsTo(PurchaseOrderType::class, 'purchase_order_type_id');
-    }
     public function supplier()
     {
         return $this->belongsTo(Supplier::class, 'supplier_id');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function purchase_order_items()

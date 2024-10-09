@@ -22,8 +22,6 @@ return new class extends Migration
             $table->string('subtotal')->nullable();
             $table->string('total')->nullable();
             $table->string('insufficient_payment')->nullable();
-            $table->unsignedBigInteger('purchase_order_type_id')->nullable();
-            $table->foreign('purchase_order_type_id')->on('purchase_order_types')->references('id')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('supplier_id')->nullable();
             $table->foreign('supplier_id')->on('suppliers')->references('id')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();

@@ -9,6 +9,10 @@ use Illuminate\Contracts\Support\Htmlable;
 class CreateLeaveRequest extends CreateRecord
 {
     protected static string $resource = LeaveRequestResource::class;
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 
     public function getTitle(): string|Htmlable
     {

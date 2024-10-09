@@ -23,7 +23,7 @@ class LeaveTypeResource extends Resource implements HasShieldPermissions
     protected static ?string $model = LeaveType::class;
 
     protected static ?string $navigationIcon = 'heroicon-m-tag';
-    protected static ?string $navigationGroup = 'Features';
+    protected static ?string $navigationGroup = 'Employee Features';
     protected static ?int $navigationSort = 1;
 
     public static function getPermissionPrefixes(): array

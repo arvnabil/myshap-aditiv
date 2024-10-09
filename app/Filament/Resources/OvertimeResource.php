@@ -5,16 +5,11 @@ namespace App\Filament\Resources;
 use App\Enums\StatusOvertime;
 use App\Enums\StatusOvertimeItem;
 use App\Filament\Resources\OvertimeResource\Pages;
-use App\Filament\Resources\OvertimeResource\RelationManagers;
-use App\Models\OvertimeItem;
-use App\Models\Overtime;
 use App\Models\OvertimeRequest;
 use Illuminate\Database\Eloquent\Model;
 use Awcodes\TableRepeater\Components\TableRepeater;
 use Awcodes\TableRepeater\Header;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
-use Filament\Forms;
-use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
@@ -27,19 +22,16 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\Alignment;
 use Filament\Tables;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\Date;
 
 class OvertimeResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = OvertimeRequest::class;
 
     protected static ?string $navigationIcon = 'heroicon-m-clock';
-    protected static ?string $navigationGroup = 'Features';
+    protected static ?string $navigationGroup = 'Employee Features';
     protected static ?int $navigationSort = 3;
 
     public static function getNavigationLabel(): string

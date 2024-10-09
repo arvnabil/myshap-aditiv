@@ -65,6 +65,15 @@ class MyProfile extends Page implements HasForms
                             ->resize(50)
                             ->optimize('webp')
                             ->directory('profile'),
+                        FileUpload::make('signature') //this is the avatar picker
+                            ->label(__('Signature'))
+                            ->image()
+                            ->resize(50)
+                            ->optimize('webp')
+                            ->directory('signature'),
+                        TextInput::make('quotation_number')
+                            ->placeholder('Ex: Q01')
+                            ->required(),
                         TextInput::make('email')
                         ->label(__('menu.user_update.field.email'))
                             ->email()

@@ -51,8 +51,8 @@ class UserResource extends Resource implements HasShieldPermissions
             ->schema([
                 Card::make([
                     FileUpload::make('avatar') //this is the avatar picker
-                    ->label(__('menu.user_update.field.avatar'))
-                    ->image()
+                        ->label(__('menu.user_update.field.avatar'))
+                        ->image()
                         ->resize(50)
                         ->optimize('webp')
                         ->directory('profile'),
@@ -76,6 +76,15 @@ class UserResource extends Resource implements HasShieldPermissions
                         ->multiple('roles')
                         ->relationship('roles', 'name')
                         ->noSearchResultsMessage('No roles found.'),
+                    FileUpload::make('signature') //this is the avatar picker
+                        ->label(__('Signature'))
+                        ->image()
+                        ->resize(50)
+                        ->optimize('webp')
+                        ->directory('signature'),
+                    TextInput::make('quotation_number')
+                        ->placeholder(__('Ex: Q01'))
+                        ->required(),
 
                 ])->columns(2)
             ]);

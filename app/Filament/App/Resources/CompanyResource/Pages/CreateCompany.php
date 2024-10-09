@@ -18,4 +18,5 @@ class CreateCompany extends CreateRecord
     {
         return __('menu.companies.create_company');
     }
+    
 }

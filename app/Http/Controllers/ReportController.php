@@ -6,6 +6,7 @@ use App\Models\ActivationLetter;
 use App\Models\LeaveRequest;
 use App\Models\OvertimeRequest;
 use App\Models\PurchaseOrder;
+use App\Models\Quotation;
 use App\Models\ReimbursementRequest;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -68,31 +69,22 @@ class ReportController extends Controller
 
     // }
 
-    public function activation_letter_view(ActivationLetter $record)
-    {
-        if ($record->user->id === auth()->user()->id || auth()->user()->hasRole('super_admin')) {
-            return view('mail.activation_letter.index', ['activation_letter' => $record]);
-        }
-        abort(403, 'You are not allowed to access this page');
-    }
-
-    public function activation_letter_download(ActivationLetter $record)
-    {
-        if ($record->user->id === auth()->user()->id || auth()->user()->hasRole('super_admin') && $record->brand->name === 'Zoom') {
-            $pdf = Pdf::loadView('reports.activation_letters.zoom.index', ['activation_letter' => $record])->setOption(['defaultFont' => 'sans-serif']);
-            $pdf->setPaper('A4', 'landscape');
-            $pdf->render();
-            return $pdf->download('Activation Letter.pdf');
-        }
-        abort(403, 'You are not allowed to access this page');
-    }
-
     public function purchase_order_view(PurchaseOrder $record)
     {
         // $recordWithItem = PurchaseOrder::with('purchase_order_items', 'user', 'user_checked_by')->find($record->id);
         $recordWithItem = PurchaseOrder::with('purchase_order_items')->find($record->id);
         // if ($record->user->id === auth()->user()->id || auth()->user()->hasRole('super_admin')) {
             return view('mail.purchase_order.index', ['purchaseOrder' => $recordWithItem]);
+        // }
+        // abort(403, 'You are not allowed to access this page');
+    }
+
+    public function quotation_view(Quotation $record)
+    {
+        // $recordWithItem = Quotation::with('purchase_order_items', 'user', 'user_checked_by')->find($record->id);
+        $recordWithItem = Quotation::with('quotation_items')->find($record->id);
+        // if ($record->user->id === auth()->user()->id || auth()->user()->hasRole('super_admin')) {
+            return view('mail.quotation.index', ['quotation' => $recordWithItem]);
         // }
         // abort(403, 'You are not allowed to access this page');
     }
