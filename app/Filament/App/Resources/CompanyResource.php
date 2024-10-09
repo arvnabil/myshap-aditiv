@@ -97,9 +97,7 @@ class CompanyResource extends Resource implements HasShieldPermissions
                     Hidden::make('user_id')
                         ->default(auth()->user()->id),
                 ])->columns(2)
-            ])->recordUrl(
-                fn(Model $record) => null,
-            );
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -155,9 +153,8 @@ class CompanyResource extends Resource implements HasShieldPermissions
                 // Tables\Actions\BulkActionGroup::make([
                 //     Tables\Actions\DeleteBulkAction::make(),
                 // ]),
-            ])
-            ->recordUrl(
-                fn (Model $record) => null,
+            ])->recordUrl(
+                fn(Model $record) => null,
             );
     }
 
