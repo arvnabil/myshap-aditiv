@@ -47,7 +47,7 @@
                     <br />
                     {{ $quotation->customer_name }}
                     <br />
-                    {{ $quotation->customer_address }}
+                    {!! $quotation->customer_address !!}
                     <br />
                     Phone : {{ $quotation->customer_phone }}
                     <br />
