@@ -20,6 +20,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
 class QuotationResource extends Resource
@@ -46,7 +47,7 @@ class QuotationResource extends Resource
         function IdQuotation()
         {
             // 'QO1.1024.001'
-            $check_po = Quotation::orderBy('created_at', 'desc')->first();
+            $check_po = Quotation::where('user_id', Auth::user()->id)->orderBy('created_at', 'desc')->first();
             if ($check_po === null) {
                 $bulanTahun = Carbon::parse(now())->format('my');
                 $numberNOW = Auth::user()->quotation_number . '.' . $bulanTahun . '.001';
@@ -300,5 +301,10 @@ class QuotationResource extends Resource
             'create' => Pages\CreateQuotation::route('/create'),
             'edit' => Pages\EditQuotation::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('user_id', auth()->id())->orderBy('created_at', 'DESC');
     }
 }

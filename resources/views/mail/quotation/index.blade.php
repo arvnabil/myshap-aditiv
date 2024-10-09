@@ -4,6 +4,7 @@
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Arial:wght@400;700&amp;display=swap" rel="stylesheet" />
+    {{-- <link rel="stylesheet" href="{{ asset('report_template/assets/css/style.css')}}"> --}}
     <style>
         body {
             font-family: 'Arial', sans-serif;
