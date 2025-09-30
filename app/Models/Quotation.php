@@ -22,7 +22,8 @@ class Quotation extends Model
         'customer_company',
         'customer_phone',
         'customer_id',
-        'user_id'
+        'user_id',
+        'templatesnk_id'
     ];
 
     public function customer()
@@ -37,5 +38,10 @@ class Quotation extends Model
     public function quotation_items()
     {
         return $this->hasMany(QuotationItem::class, 'quotation_id');
+    }
+
+    public function templatesnk()
+    {
+        return $this->belongsTo(Templatesnk::class, 'templatesnk_id');
     }
 }

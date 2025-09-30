@@ -12,6 +12,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReportController extends Controller
 {
+
     public function leave_request_view(LeaveRequest $record) {
         if($record->user->id === auth()->user()->id || auth()->user()->hasRole('super_admin')){
             return view('mail.leaves.index', ['leaveRequest' => $record]);
@@ -82,9 +83,9 @@ class ReportController extends Controller
     public function quotation_view(Quotation $record)
     {
         // $recordWithItem = Quotation::with('purchase_order_items', 'user', 'user_checked_by')->find($record->id);
-        $recordWithItem = Quotation::with('quotation_items')->find($record->id);
+        $record->load('quotation_items', 'templatesnk');
         // if ($record->user->id === auth()->user()->id || auth()->user()->hasRole('super_admin')) {
-            return view('mail.quotation.index', ['quotation' => $recordWithItem]);
+            return view('mail.quotation.index', ['quotation' => $record]);
         // }
         // abort(403, 'You are not allowed to access this page');
     }

@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             CompanySeeder::class,
             DepartementSeeder::class,
             LeaveTypeSeeder::class,
+            DefaultTemplateSNKSeeder::class,
         ]);
     }
 }

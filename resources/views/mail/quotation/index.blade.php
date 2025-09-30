@@ -1,7 +1,7 @@
 <!DOCTYPE html>
+
 <head>
-    <script src="https://cdn.tailwindcss.com">
-    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Arial:wght@400;700&amp;display=swap" rel="stylesheet" />
     {{-- <link rel="stylesheet" href="{{ asset('report_template/assets/css/style.css')}}"> --}}
@@ -19,21 +19,23 @@
 </head>
 
 <body class="bg-white p-0">
-@php
-    $quotation_date = \Carbon\Carbon::parse($quotation->quotation_date);
-    $due_date = \Carbon\Carbon::parse($quotation->due_date);
-@endphp
+    @php
+        $quotation_date = \Carbon\Carbon::parse($quotation->quotation_date);
+        $due_date = \Carbon\Carbon::parse($quotation->due_date);
+    @endphp
     <div class="max-w-4xl mx-auto border p-8">
         <div class="flex justify-start items-start mb-8">
             <div>
-                <img alt="Company Logo" class="mb-4" height="50" src="{{ asset('report_template/assets/img/aditiv-light.webp') }}" width="200" />
+                <img alt="Company Logo" class="mb-4" height="50"
+                    src="{{ asset('report_template/assets/img/aditiv-light.webp') }}" width="200" />
             </div>
             <div class="text-left mt-5 ml-10">
                 <p class="font-bold">
                     PT ABAD DIGITAL KREATIV
                 </p>
                 <p>
-                    Arcade Business Center 6th Floor Unit 6-03,Jl. Pantai Indah Utara 2,<br/> Kav.C1, Desa/Kelurahan Kapuk Muara, Kec. Penjaringan, <br/>Kota Adm. Jakarta Utara, Provinsi DKI Jakarta
+                    Arcade Business Center 6th Floor Unit 6-03,Jl. Pantai Indah Utara 2,<br /> Kav.C1, Desa/Kelurahan
+                    Kapuk Muara, Kec. Penjaringan, <br />Kota Adm. Jakarta Utara, Provinsi DKI Jakarta
                 </p>
             </div>
         </div>
@@ -116,22 +118,22 @@
             <tbody>
                 @foreach ($quotation->quotation_items as $item)
                     <tr>
-                    <td class="border p-2">
-                        {{ $item->product_name }}
-                    </td>
-                    <td class="border p-2">
-                        {{ $item->qty . ' ' }} {{ $item->satuan }}
-                    </td>
-                    <td class="border p-2">
-                        {{ idr($item->discount,1) }}%
-                    </td>
-                    <td class="border p-2">
-                        {{ idr($item->unit_price,2) }}
-                    </td>
-                    <td class="border p-2">
-                        {{ idr($item->amount,2) }}
-                    </td>
-                </tr>
+                        <td class="border p-2">
+                            {{ $item->product_name }}
+                        </td>
+                        <td class="border p-2">
+                            {{ $item->qty . ' ' }} {{ $item->satuan }}
+                        </td>
+                        <td class="border p-2">
+                            {{ idr($item->discount, 1) }}%
+                        </td>
+                        <td class="border p-2">
+                            {{ idr($item->unit_price, 2) }}
+                        </td>
+                        <td class="border p-2">
+                            {{ idr($item->amount, 2) }}
+                        </td>
+                    </tr>
                 @endforeach
 
             </tbody>
@@ -142,30 +144,13 @@
                     Syarat &amp; Ketentuan
                 </p>
                 <ol class="list-decimal list-inside">
-                    <li>
-                        Harga sudah termasuk PPN 11%
-                    </li>
-                    <li>
-                        Harga belum termasuk PPH 22/PPH 23
-                    </li>
-                    <li>
-                        Harga belum termasuk biaya instalasi by remote &amp; onsite
-                    </li>
-                    <li>
-                        Pembayaran CBD (Cash before delivery)
-                    </li>
-                    <li>
-                        Ready stock (limited stock)
-                    </li>
-                    <li>
-                        Dikenakan biaya pembatalan 50% jika pembeli membatalkan PO
-                    </li>
-                    <li>
-                        Garansi 2 tahun
-                    </li>
-                    <li>
-                        Harga FOB Jakarta
-                    </li>
+                    @if ($quotation->templatesnk)
+                        @foreach ($quotation->templatesnk->description as $desc)
+                            <li>
+                                {{ $desc['point'] }}
+                            </li>
+                        @endforeach
+                    @endif
                 </ol>
                 <p class="mt-4">
                     Nomor Rekening :
@@ -181,7 +166,7 @@
                         SUBTOTAL
                     </p>
                     <p>
-                        {{ idr($quotation->subtotal,2) }}
+                        {{ idr($quotation->subtotal, 2) }}
                     </p>
                 </div>
                 <div class="flex justify-between mb-2">
@@ -189,7 +174,7 @@
                         PPN 11.0%
                     </p>
                     <p>
-                        {{ idr($quotation->ppn,2) }}
+                        {{ idr($quotation->ppn, 2) }}
                     </p>
                 </div>
                 <div class="flex justify-between bg-gray-200 p-2" style="background-color: #7989A1;color:#fff">
@@ -197,12 +182,13 @@
                         TOTAL
                     </p>
                     <p class="font-bold">
-                        {{ idr($quotation->total,2) }}
+                        {{ idr($quotation->total, 2) }}
                     </p>
                 </div>
                 <div class="mt-8">
                     <p>
-                        <img alt="Company Logo" height="50" src="{{ asset('storage/' . $quotation->user->signature) }}" width="200" />
+                        <img alt="Company Logo" height="50"
+                            src="{{ asset('storage/' . $quotation->user->signature) }}" width="200" />
                     </p>
                     <div class="border-t-2 border-gray-400 mt-4 pt-2">
                         <p>
@@ -217,4 +203,5 @@
         </div>
     </div>
 </body>
+
 </html>
