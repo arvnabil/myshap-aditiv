@@ -12,11 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('quotations', function (Blueprint $table) {
-            $table->foreignId('templatesnk_id')
-                  ->default(1)
-                  ->nullable()
-                  ->constrained('templatesnks')
-                  ->onUpdate('cascade');
+            $table->foreignId('templatesnk_id')->nullable()->constrained('templatesnks')->onUpdate('cascade');
         });
     }
 

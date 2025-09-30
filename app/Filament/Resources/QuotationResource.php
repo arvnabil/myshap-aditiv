@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\QuotationResource\Pages;
 use App\Models\Quotation;
+use App\Models\Templatesnk;
 use Awcodes\TableRepeater\Components\TableRepeater;
 use Awcodes\TableRepeater\Header;
 use Carbon\Carbon;
@@ -239,6 +240,12 @@ class QuotationResource extends Resource
                             ->label('Total')
                             ->placeholder('Otomatis Subtotal + PPN')
                             ->readOnly()
+                            ->required(),
+                        Select::make('templatesnk_id')
+                            ->label('Template SNK')
+                            ->placeholder('Pilih Template SNK')
+                            ->options(Templatesnk::all()->pluck('name', 'id'))
+                            ->searchable()
                             ->required(),
                         Hidden::make('user_id')->default(Auth::user()->id)
 
