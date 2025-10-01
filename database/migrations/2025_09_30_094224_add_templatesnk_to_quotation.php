@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('quotations', function (Blueprint $table) {
-            $table->foreignId('templatesnk_id')->nullable()->constrained('templatesnks')->onUpdate('cascade');
+            $table->unsignedBigInteger('templatesnk_id')->nullable();
+
+            $table->foreign('templatesnk_id')->references('id')->on('templatesnks')->onUpdate('cascade');
         });
     }
 
@@ -22,8 +24,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('quotations', function (Blueprint $table) {
-            $table->dropForeign(['templatesnk_id']);
-            $table->dropColumn('templatesnk_id');
+            $table->dropForeign('quotations_templatesnk_id_foreign');
         });
     }
 };
