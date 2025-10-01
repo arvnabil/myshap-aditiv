@@ -15,13 +15,13 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         $this->call([
-            CountrySeeder::class,
-            ShieldSeeder::class,
-            UserSeeder::class,
-            BrandSeeder::class,
-            CompanySeeder::class,
-            DepartementSeeder::class,
-            LeaveTypeSeeder::class,
+            // CountrySeeder::class,
+            // ShieldSeeder::class,
+            // UserSeeder::class,
+            // BrandSeeder::class,
+            // CompanySeeder::class,
+            // DepartementSeeder::class,
+            // LeaveTypeSeeder::class,
             DefaultTemplateSNKSeeder::class,
         ]);
     }

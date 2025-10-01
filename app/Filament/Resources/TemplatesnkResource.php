@@ -21,6 +21,8 @@ class TemplatesnkResource extends Resource
     protected static ?string $model = Templatesnk::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Data Master';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
